@@ -1,0 +1,27 @@
+on:
+  release:
+    types: [published]
+
+name: Create Release
+
+jobs:
+
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: olegtarasov/get-tag@v1
+      id: tagName
+
+    - uses: actions/checkout@master
+    
+    # Connect to Azure Container registry (ACR)
+    - uses: azure/docker-login@v1
+      with:
+        username: ${{ secrets.REGISTRY_USERNAME }} 
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    
+    # Docker build and push to a Azure Container registry (ACR)
+    - run: |
+        docker build . --file Dockerfile --tag keitz/githubrunner:${{ steps.tagName.outputs.tag }}
+        docker push keitz/githubrunner:${{ steps.tagName.outputs.tag }}
