@@ -3,12 +3,18 @@ name: Docker Image CI
 on: [push]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag keitz:$(date +%s)
+    - uses: actions/checkout@master
+    
+    # Connect to Azure Container registry (ACR)
+    - uses: azure/docker-login@v1
+      with:
+        username: ${{ secrets.REGISTRY_USERNAME }} 
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    
+    # Docker build and push to a Azure Container registry (ACR)
+    - run: |
+        docker build . --file Dockerfile --tag keitz/githubrunner:${{ github.sha }}
+        docker push keitz/githubrunner:${{ github.sha }}
