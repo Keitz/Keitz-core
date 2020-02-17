@@ -6,7 +6,7 @@ ARG REPO=
 ADD run_runner.sh .
 
 RUN apt-get update \
-    && apt-get install curl vim sudo -y \
+    && apt-get install curl vim sudo git -y \
     && curl -O -L https://github.com/actions/runner/releases/download/v2.164.0/actions-runner-linux-x64-2.164.0.tar.gz \
     && tar xzf ./actions-runner-linux-x64-2.164.0.tar.gz \
     && chmod 777 ./config.sh \
